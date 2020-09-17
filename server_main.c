@@ -6,15 +6,10 @@
 //  Copyright (c) 2014 Espen Næss. All rights reserved.
 //
 
-#include "server_main.h"
+//#include "server_main.h"
+#include <stdio.h>
 #include <string.h>
 #include <netdb.h>
-
-int main(int argc, const char * argv[])
-{
-    run_server();
-    return 0;
-}
 
 void run_server(void) { // SERVERKODE
     int ny_socket, status_get_addr, status_sock, ja;
@@ -33,14 +28,14 @@ void run_server(void) { // SERVERKODE
     hint.ai_socktype = SOCK_STREAM;
     hint.ai_protocol = IPPROTO_TCP;
     //hint.ai_flags = AI_PASSIVE;
-
-    if ((status_get_addr = getaddrinfo("192.168.0.14", "7864", &hint, &server_info)) != 0) {
+    // "192.168.0.14"
+    if ((status_get_addr = getaddrinfo("127.0.0.1", "7864", &hint, &server_info)) != 0) {
         fprintf(stderr, "getaddrinfo feilet med feilmelding: %s\n", gai_strerror(status_get_addr));
     }
 
     status_sock = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
 
-    printf("status: %i", status_sock);
+    printf("sock status: %i \n", status_sock);
 
     if (setsockopt(status_sock, SOL_SOCKET, SO_REUSEADDR, &ja, sizeof(ja)) == -1) {
         perror("setsockopt feilet");
@@ -58,13 +53,19 @@ void run_server(void) { // SERVERKODE
 
     strcpy(buffer, "Heisann du der!");
     send(ny_socket, buffer, sizeof(buffer), 0);
-    printf("buffer: %s\n", buffer);
-    memset(buffer, 0, sizeof(buffer));
-    printf("buffer: %s\n", buffer);
+    printf("sendt melding: %s\n", buffer);
+    //memset(buffer, 0, sizeof(buffer));
+    //printf("buffer: %s\n", buffer);
 
     recv(ny_socket, &recv_meld, 1024, 0);
-    printf("MOTATT: %s\n", recv_meld);
+    printf("mottatt melding: %s\n", recv_meld);
 
     shutdown(ny_socket, 2);
     shutdown(status_sock, 2);
+}
+
+int main(int argc, const char * argv[])
+{
+    run_server();
+    return 0;
 }

@@ -1,3 +1,6 @@
+using namespace boost::asio::ip;
+using namespace std;
+
 class Klient {
 public:
   Klient(boost::asio::io_service & io_service, tcp::resolver::iterator adresseitr);

@@ -46,10 +46,10 @@ struct test_T<T> {
 
 template <typename T>
 struct Har_Constructor {
-    template <typename U, typename = decltype(declval<U>().d)>
+    template <typename U, typename = decltype(std::declval<U>().d)>
     static uint8_t SFINAE(U&&);
     template <typename U>
     static uint32_t SFINAE(...);
 
-    static const bool verdi = (sizeof(SFINAE(declval<T>())) == sizeof(uint8_t));
+    static const bool verdi = (sizeof(SFINAE(std::declval<T>())) == sizeof(uint8_t));
 };
